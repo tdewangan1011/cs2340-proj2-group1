@@ -6,6 +6,7 @@ from .forms import CustomUserCreationForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import Http404
 
 
 # Create your views here.
@@ -56,6 +57,91 @@ def signup(request):
 @login_required
 def orders(request):
     template_data = {}
+<<<<<<< Updated upstream
     template_data['title'] = 'Orders'
     template_data['orders'] = request.user.order_set.all()
     return render(request, 'accounts/orders.html', {'template_data': template_data})
+=======
+    template_data['title'] = 'Profile'
+    template_data['profile'] = profile
+
+    return render(request, 'accounts/profile.html', {'template_data': template_data})
+
+
+@login_required
+def edit_profile(request):
+    profile = get_object_or_404(Profile, user=request.user)
+
+    if profile.role != "JOB_SEEKER":
+        return redirect('home.index')
+
+    template_data = {}
+    template_data['title'] = 'Edit Profile'
+
+    if request.method == 'GET':
+        form = JobSeekerProfileForm(
+            initial={
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+                'email': request.user.email,
+                'headline': profile.headline,
+                'location': profile.location,
+                'skills': profile.skills,
+                'education': profile.education,
+                'work_experience': profile.work_experience,
+                'projects': profile.projects,
+                'linkedin_url': profile.linkedin_url,
+                'github_url': profile.github_url,
+                'portfolio_url': profile.portfolio_url,
+                'profile_public': profile.profile_public
+            }
+        )
+
+        template_data['form'] = form
+
+        return render(request,'accounts/edit_profile.html',{'template_data': template_data})
+
+    elif request.method == 'POST':
+        form = JobSeekerProfileForm(request.POST)
+
+        if form.is_valid():
+            request.user.first_name = (form.cleaned_data['first_name'])
+            request.user.last_name = (form.cleaned_data['last_name'])
+            request.user.email = (form.cleaned_data['email'])
+
+            request.user.save()
+
+            profile.headline = (form.cleaned_data['headline'])
+            profile.location = (form.cleaned_data['location'])
+            profile.skills = (form.cleaned_data['skills'])
+            profile.education = (form.cleaned_data['education'])
+            profile.work_experience = (form.cleaned_data['work_experience'])
+            profile.projects = (form.cleaned_data['projects'])
+            profile.linkedin_url = (form.cleaned_data['linkedin_url'])
+            profile.github_url = (form.cleaned_data['github_url'])
+            profile.portfolio_url = (form.cleaned_data['portfolio_url'])
+            profile.profile_public = (form.cleaned_data['profile_public'])
+
+            profile.save()
+
+            return redirect('accounts.profile')
+
+        else:
+            template_data['form'] = form
+            return render(request,'accounts/edit_profile.html',{'template_data': template_data})
+
+
+@login_required
+def profile_detail(request, id):
+    profile = get_object_or_404(Profile, id=id, role="JOB_SEEKER")
+
+    # Check the profile privacy
+    if not profile.profile_public and profile.user_id != request.user.id:
+        raise Http404("Profile is not public.")
+
+    template_data = {}
+    template_data['title'] = f"{profile.user.username}'s Profile"
+    template_data['profile'] = profile
+
+    return render(request, 'accounts/profile.html', {'template_data': template_data})
+>>>>>>> Stashed changes
