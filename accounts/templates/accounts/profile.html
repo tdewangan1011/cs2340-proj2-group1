@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="p-3 mt-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-9">
+        <div class="card shadow p-4 mb-4 rounded">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h2>
+                  {% if template_data.profile.user.first_name or template_data.profile.user.last_name %}
+                    {{ template_data.profile.user.first_name }}
+                    {{ template_data.profile.user.last_name }}
+                  {% else %}
+                    {{ template_data.profile.user.username }}
+                  {% endif %}
+                </h2>
+
+                {% if template_data.profile.headline %}
+                  <h5 class="text-muted">
+                    {{ template_data.profile.headline }}
+                  </h5>
+                {% endif %}
+
+                {% if template_data.profile.location %}
+                  <p class="text-muted">
+                    <i class="fas fa-location-dot"></i>
+                    {{ template_data.profile.location }}
+                  </p>
+                {% endif %}
+
+              </div>
+
+              {% if user == template_data.profile.user %}
+                <a href="{% url 'accounts.edit_profile' %}" class="btn btn-dark">
+                  Edit Profile
+                </a>
+              {% endif %}
+
+            </div>
+            <hr />
+
+            <h4>Skills</h4>
+            {% if template_data.profile.skills %}
+              <p>{{ template_data.profile.skills|linebreaksbr }}</p>
+            {% else %}
+              <p class="text-muted">No skills have been added yet.</p>
+            {% endif %}
+
+            <hr />
+            <h4>Education</h4>
+
+            {% if template_data.profile.education %}
+              <p>{{ template_data.profile.education|linebreaksbr }}</p>
+            {% else %}
+              <p class="text-muted">No education information has been added yet.</p>
+            {% endif %}
+            <hr />
+
+            <h4>Work Experience</h4>
+            {% if template_data.profile.work_experience %}
+              <p>{{ template_data.profile.work_experience|linebreaksbr }}</p>
+
+            {% else %}
+              <p class="text-muted">No work experience has been added yet.</p>
+            {% endif %}
+            <hr />
+
+            <h4>Projects</h4>
+            {% if template_data.profile.projects %}
+              <p>{{ template_data.profile.projects|linebreaksbr }}</p>
+
+            {% else %}
+              <p class="text-muted">No projects have been added yet.</p>
+            {% endif %}
+
+            <hr />
+            <h4>Links</h4>
+
+            {% if template_data.profile.linkedin_url %}
+
+              <p>
+                <i class="fab fa-linkedin"></i>
+                <a href="{{ template_data.profile.linkedin_url }}" target="_blank">LinkedIn</a>
+              </p>
+
+            {% endif %}
+
+            {% if template_data.profile.github_url %}
+
+              <p>
+                <i class="fab fa-github"></i>
+                <a href="{{ template_data.profile.github_url }}" target="_blank">
+                  GitHub
+                </a>
+              </p>
+
+            {% endif %}
+
+            {% if template_data.profile.portfolio_url %}
+
+              <p>
+                <i class="fas fa-globe"></i>
+
+                <a href="{{ template_data.profile.portfolio_url }}" target="_blank">
+                  Portfolio
+                </a>
+              </p>
+
+            {% endif %}
+
+            {% if not template_data.profile.linkedin_url and not template_data.profile.github_url and not template_data.profile.portfolio_url %}
+
+              <p class="text-muted">
+                No links have been added
+              </p>
+
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
