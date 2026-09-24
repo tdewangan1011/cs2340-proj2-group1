@@ -13,9 +13,6 @@ class CustomUserCreationForm(UserCreationForm):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
 
         for fieldname in self.fields.values():
-<<<<<<< Updated upstream
-            fieldname.widget.attrs.update({'class': 'form-control'})
-=======
             fieldname.widget.attrs.update({'class': 'form-control'})
 
 
@@ -41,7 +38,3 @@ class JobSeekerProfileForm(forms.Form):
             fieldname.widget.attrs.update({'class': 'form-control'})
 
         self.fields['profile_public'].widget.attrs.update({'class': 'form-check-input'})
-
-
-
->>>>>>> Stashed changes
