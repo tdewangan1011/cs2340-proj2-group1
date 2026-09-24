@@ -8,7 +8,7 @@ class Profile(models.Model):
 
     role = models.CharField(max_length=100, choices=[('JOB_SEEKER', 'Job Seeker'), ('RECRUITER', 'Recruiter')])
 
-    headline = models.CharField(max_length=20, blank=True)
+    headline = models.CharField(max_length=255, blank=True)
 
     skills = models.TextField(blank=True)
 
