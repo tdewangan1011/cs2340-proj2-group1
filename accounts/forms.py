@@ -13,6 +13,9 @@ class CustomUserCreationForm(UserCreationForm):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
 
         for fieldname in self.fields.values():
+<<<<<<< Updated upstream
+            fieldname.widget.attrs.update({'class': 'form-control'})
+=======
             fieldname.widget.attrs.update({'class': 'form-control'})
 
 
@@ -29,6 +32,7 @@ class JobSeekerProfileForm(forms.Form):
     linkedin_url = forms.URLField(required=False)
     github_url = forms.URLField(required=False)
     portfolio_url = forms.URLField(required=False)
+    profile_public = forms.BooleanField(required=False, label="Make profile visible to recruiters")
 
     def __init__(self, *args, **kwargs):
         super(JobSeekerProfileForm, self).__init__(*args, **kwargs)
@@ -36,7 +40,8 @@ class JobSeekerProfileForm(forms.Form):
         for fieldname in self.fields.values():
             fieldname.widget.attrs.update({'class': 'form-control'})
 
+        self.fields['profile_public'].widget.attrs.update({'class': 'form-check-input'})
 
 
 
-
+>>>>>>> Stashed changes

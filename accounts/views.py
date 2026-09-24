@@ -1,11 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
-from .forms import CustomUserCreationForm, JobSeekerProfileForm
+from .forms import CustomUserCreationForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import Http404
 
 
 # Create your views here.
@@ -44,9 +45,7 @@ def signup(request):
     elif request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.email = form.cleaned_data['email']
-            user.save()
+            user = form.save()
 
             Profile.objects.create(user=user, role=form.cleaned_data['role'])
 
@@ -56,13 +55,13 @@ def signup(request):
             return render(request, 'accounts/signup.html', {'template_data': template_data})
 
 @login_required
-def profile(request):
-    profile = get_object_or_404(Profile, user=request.user)
-
-    if profile.role != "JOB_SEEKER":
-        return redirect('home.index')
-
+def orders(request):
     template_data = {}
+<<<<<<< Updated upstream
+    template_data['title'] = 'Orders'
+    template_data['orders'] = request.user.order_set.all()
+    return render(request, 'accounts/orders.html', {'template_data': template_data})
+=======
     template_data['title'] = 'Profile'
     template_data['profile'] = profile
 
@@ -94,6 +93,7 @@ def edit_profile(request):
                 'linkedin_url': profile.linkedin_url,
                 'github_url': profile.github_url,
                 'portfolio_url': profile.portfolio_url,
+                'profile_public': profile.profile_public
             }
         )
 
@@ -120,6 +120,7 @@ def edit_profile(request):
             profile.linkedin_url = (form.cleaned_data['linkedin_url'])
             profile.github_url = (form.cleaned_data['github_url'])
             profile.portfolio_url = (form.cleaned_data['portfolio_url'])
+            profile.profile_public = (form.cleaned_data['profile_public'])
 
             profile.save()
 
@@ -134,8 +135,13 @@ def edit_profile(request):
 def profile_detail(request, id):
     profile = get_object_or_404(Profile, id=id, role="JOB_SEEKER")
 
+    # Check the profile privacy
+    if not profile.profile_public and profile.user_id != request.user.id:
+        raise Http404("Profile is not public.")
+
     template_data = {}
     template_data['title'] = f"{profile.user.username}'s Profile"
     template_data['profile'] = profile
 
     return render(request, 'accounts/profile.html', {'template_data': template_data})
+>>>>>>> Stashed changes
