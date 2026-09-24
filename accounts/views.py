@@ -57,6 +57,7 @@ def signup(request):
             return render(request, 'accounts/signup.html', {'template_data': template_data})
 
 
+@login_required
 def profile(request):
     profile = get_object_or_404(Profile, user=request.user)
 
