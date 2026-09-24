@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, JobSeekerProfileForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -45,7 +45,9 @@ def signup(request):
     elif request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.email = form.cleaned_data['email']
+            user.save()
 
             Profile.objects.create(user=user, role=form.cleaned_data['role'])
 
@@ -54,18 +56,22 @@ def signup(request):
             template_data['form'] = form
             return render(request, 'accounts/signup.html', {'template_data': template_data})
 
-@login_required
-def orders(request):
+
+def profile(request):
+    profile = get_object_or_404(Profile, user=request.user)
+
+    if profile.role != 'JOB_SEEKER':
+        return redirect('home.index')
+
     template_data = {}
-<<<<<<< Updated upstream
-    template_data['title'] = 'Orders'
-    template_data['orders'] = request.user.order_set.all()
-    return render(request, 'accounts/orders.html', {'template_data': template_data})
-=======
     template_data['title'] = 'Profile'
     template_data['profile'] = profile
 
-    return render(request, 'accounts/profile.html', {'template_data': template_data})
+    return render(
+        request,
+        'accounts/profile.html',
+        {'template_data': template_data},
+    )
 
 
 @login_required
@@ -144,4 +150,3 @@ def profile_detail(request, id):
     template_data['profile'] = profile
 
     return render(request, 'accounts/profile.html', {'template_data': template_data})
->>>>>>> Stashed changes
