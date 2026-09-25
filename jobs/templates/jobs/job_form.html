@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container page-shell">
+  <div class="page-header">
+    <h1>{{ page_title }}</h1>
+    <p class="mb-0">Share the details of the role that applicants need to know.</p>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            {% for field in form %}
+              {% if field.field.widget.input_type == 'checkbox' %}
+                <div class="form-check mb-3">
+                  {{ field }}
+                  {{ field.label_tag }}
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="mb-3">
+                  {{ field.label_tag }}
+                  {{ field }}
+                  {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+              <button class="btn btn-brand" type="submit">Save job</button>
+              <a class="btn btn-outline-brand" href="{% url 'jobs.mine' %}">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}
