@@ -1,0 +1,125 @@
+:root {
+  --navy: #051e39;
+  --gold: #b39051;
+  --cream: #f8f6f1;
+  --text: #24364a;
+  --border: #e4e7eb;
+}
+
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+}
+
+h1, h2, h3, h4 {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.navbar.bg-dark,
+.ms-footer-bottom.bg-dark {
+  background-color: var(--navy) !important;
+}
+
+.navbar .nav-link {
+  color: #f8f6f1;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus-visible {
+  color: #e5c98f;
+}
+
+.ms-footer {
+  background: var(--navy);
+}
+
+.page-shell {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.hero {
+  padding: 3rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(5, 30, 57, 0.06);
+}
+
+.hero h1 {
+  max-width: 660px;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.hero p {
+  max-width: 650px;
+  line-height: 1.7;
+}
+
+.eyebrow {
+  color: #82632e;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.card {
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(5, 30, 57, 0.05);
+}
+
+.card-body {
+  padding: 1.75rem;
+}
+
+.btn-brand,
+.btn-outline-brand {
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-brand {
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  color: var(--navy);
+}
+
+.btn-brand:hover,
+.btn-brand:focus-visible {
+  background: #a47e3d;
+  border-color: #a47e3d;
+  color: var(--navy);
+}
+
+.btn-outline-brand {
+  background: transparent;
+  border: 1px solid var(--navy);
+  color: var(--navy);
+}
+
+.btn-outline-brand:hover,
+.btn-outline-brand:focus-visible {
+  background: var(--navy);
+  color: #fff;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 0.2rem rgba(179, 144, 81, 0.18);
+}
+
+@media (max-width: 576px) {
+  .hero { padding: 2rem 1.25rem; }
+  .page-shell { padding-top: 2rem; }
+}
