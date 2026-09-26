@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
 from accounts.models import Profile
-from .forms import JobForm
+from .forms import JobForm, JobSearchForm
 from .models import Job
 
 # Create your views here.
@@ -11,11 +11,58 @@ from .models import Job
 def index(request):
     jobs = Job.objects.filter(is_active=True)
 
+    #builds the search form from string. Now if refresh happens itll save the filters
+    form = JobSearchForm(request.GET or None)
+
+    #only go in queryset when filters get validated
+    if form.is_valid():
+        title = form.cleaned_data.get('title')
+        skills = form.cleaned_data.get('skills')
+        location = form.cleaned_data.get('location')
+        min_salary = form.cleaned_data.get('min_salary')
+        max_salary = form.cleaned_data.get('max_salary')
+        work_mode = form.cleaned_data.get('work_mode')
+        visa_sponsorship = form.cleaned_data.get('visa_sponsorship')
+
+        #skips any fields that user left blank or it will narrow the query
+        #with a contains match
+        if title:
+            jobs = jobs.filter(title__icontains=title)
+
+        if skills:
+            jobs = jobs.filter(skills__icontains=skills)
+
+        if location:
+            jobs = jobs.filter(location__icontains=location)
+
+        # a jobs salary range and the filter's salary range must be inside each other.
+        # so job paying $60k-$90k should match a filter of $70k-$120k.
+        if min_salary is not None:
+            jobs = jobs.filter(max_salary__gte=min_salary)
+
+        if max_salary is not None:
+            jobs = jobs.filter(min_salary__lte=max_salary)
+
+        #itll be an exact match for work mode
+        if work_mode:
+            jobs = jobs.filter(work_mode=work_mode)
+
+        #if it is checked itll filter sponsorship jobs
+        if visa_sponsorship:
+            jobs = jobs.filter(visa_sponsorship=True)
+
+    #new jobs come first 
+    jobs = jobs.order_by('-created_at')
+
     template_data = {}
     template_data['title'] = 'Jobs'
     template_data['jobs'] = jobs
 
-    return render(request, 'jobs/index.html', {'template_data': template_data})
+    #pass the form back so template can re-display 
+    return render(request, 'jobs/index.html', {
+        'template_data': template_data,
+        'form': form,
+    })
 
 
 def require_recruiter(request):
