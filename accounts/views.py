@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from .forms import CustomUserCreationForm, JobSeekerProfileForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
@@ -151,3 +151,27 @@ def profile_detail(request, id):
     template_data['profile'] = profile
 
     return render(request, 'accounts/profile.html', {'template_data': template_data})
+
+@login_required
+def search_seekers(request):
+    if request.user.profile.role != 'RECRUITER':
+        return redirect('home.index')
+
+    filters = {
+        field: request.GET.get(field, '').strip()
+        for field in ('skills', 'location', 'projects')
+    }
+
+    profiles = Profile.objects.filter(role='JOB_SEEKER', profile_public=True,).select_related('user')
+
+    for field, value in filters.items():
+        if value:
+            profiles = profiles.filter(**{f'{field}__icontains': value})
+    template_data = {
+        'title': 'Search Job Seekers',
+        'profiles': profiles,
+        'filters': filters,
+    }
+    return render(request, 'accounts/search_seekers.html', {
+        'template_data': template_data,
+    })

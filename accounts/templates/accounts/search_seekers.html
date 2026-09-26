@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container py-4">
+  <h1>Find Job Seekers</h1>
+
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label for="skills" class="form-label">Skills</label>
+      <input id="skills" name="skills" class="form-control"
+             value="{{ template_data.filters.skills }}">
+    </div>
+    <div class="col-md-4">
+      <label for="location" class="form-label">Location</label>
+      <input id="location" name="location" class="form-control"
+             value="{{ template_data.filters.location }}">
+    </div>
+    <div class="col-md-4">
+      <label for="projects" class="form-label">Projects</label>
+      <input id="projects" name="projects" class="form-control"
+             value="{{ template_data.filters.projects }}">
+    </div>
+    <div class="col-12">
+      <button class="btn btn-dark" type="submit">Search</button>
+      <a class="btn btn-secondary" href="{% url 'accounts.search_seekers' %}">Clear</a>
+    </div>
+  </form>
+
+  {% for profile in template_data.profiles %}
+    <article class="border-bottom py-3">
+      <h2 class="h5">
+        <a href="{% url 'accounts.profile_detail' profile.id %}">
+          {{ profile.user.get_full_name|default:profile.user.username }}
+        </a>
+      </h2>
+      {% if profile.location %}<p>{{ profile.location }}</p>{% endif %}
+      {% if profile.skills %}<p><strong>Skills:</strong> {{ profile.skills|truncatewords:24 }}</p>{% endif %}
+      {% if profile.projects %}<p><strong>Projects:</strong> {{ profile.projects|truncatewords:24 }}</p>{% endif %}
+    </article>
+  {% empty %}
+    <p>No public profiles match those filters.</p>
+  {% endfor %}
+</main>
+{% endblock content %}
